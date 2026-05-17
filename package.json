@@ -2,8 +2,8 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.1048.0",
     "@aws-sdk/lib-dynamodb": "^3.1048.0",
+    "base62": "^2.0.2",
     "dotenv": "^17.4.2"
   },
   "type": "module"
 }
-
