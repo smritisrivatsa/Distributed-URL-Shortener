@@ -1,12 +1,6 @@
 import 'dotenv/config';
-import base62 from "base62/lib/ascii.js";
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { createShortUrl } from "./src/urlService.js";
 import express from 'express';
-
-const shortCode = await createShortUrl('https://universityofwashingtonhfs8.humanity.com/app/staff/detail/8759105/');
-console.log("Short code:", shortCode);
+import { createShortUrl } from "./src/urlService.js";
 
 const app = express();
 app.use(express.static('public'));
