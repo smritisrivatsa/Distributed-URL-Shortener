@@ -61,12 +61,3 @@ async function createShortUrl(longUrl) {
 }
 
 createShortUrl('https://systemdsdfsesignschool.io/problems/url-shortener/solution');
-
-// await db.send(new PutCommand({
-//   TableName: "urls",
-//   Item: {
-//     shortCode: "aB3x9k",
-//     longUrl: "https://google.com",
-//     createdAt: new Date().toISOString(),
-//   }
-// }));
