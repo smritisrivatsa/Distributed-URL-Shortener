@@ -41,7 +41,7 @@ async function createShortUrl(longUrl) {
     ReturnValues: "UPDATED_NEW",
   }));
 
-  const id = result.Attributes.value;
+  const id = result.Attributes.count;
 
   // 2. Shuffle + encode
   const shuffled = shuffle(id);
@@ -60,7 +60,7 @@ async function createShortUrl(longUrl) {
   return shortCode;
 }
 
-createShortUrl('https://systemdesignschool.io/problems/url-shortener/solution');
+createShortUrl('https://systemdsdfsesignschool.io/problems/url-shortener/solution');
 
 // await db.send(new PutCommand({
 //   TableName: "urls",
