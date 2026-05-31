@@ -3,26 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URL Shortener</title>
+  <title>snip — URL Shortener</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Distributed URL Shortener</h1>
-  <input type="text" id="longUrl" placeholder="Enter your long URL here" />
-  <button onclick="shortenUrl()">Shorten</button>
+  <div class="container">
+    <header>
+      <div class="logo">snip<span>.</span></div>
+      <div class="tagline">Distributed URL Shortener</div>
+    </header>
+
+    <div class="card">
+      <div class="input-row">
+        <input type="text" id="longUrl" placeholder="https://your-very-long-url.com/goes/here" />
+        <button id="shortenBtn" onclick="shortenUrl()">Shorten</button>
+      </div>
+
+      <div class="error-msg" id="errorMsg">Something went wrong. Please try again.</div>
+
+      <div class="result" id="result">
+        <div class="result-label">Your short link</div>
+        <div class="result-box">
+          <a class="short-link" id="shortLink" href="#" target="_blank"></a>
+          <button class="copy-btn" id="copyBtn" onclick="copyUrl()">Copy</button>
+        </div>
+        <div class="original-url" id="originalUrl"></div>
+      </div>
+    </div>
+
+    <footer>paste long. get short. snip it.</footer>
+  </div>
 
   <script>
-    async function shortenUrl() {
-      const longUrl = document.getElementById('longUrl').value;
-      const response = await fetch('/shorten', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ longUrl })
-      });
+    let currentShortUrl = '';
 
-      const data = await response.json();
-      console.log('Short code:', data.shortCode);
-      alert(`Your short URL: http://localhost:3000/${data.shortCode}`);
+    async function shortenUrl() {
+      const input = document.getElementById('longUrl');
+      const longUrl = input.value.trim();
+      const btn = document.getElementById('shortenBtn');
+      const errorMsg = document.getElementById('errorMsg');
+      const result = document.getElementById('result');
+
+      if (!longUrl) return;
+
+      errorMsg.classList.remove('visible');
+      result.classList.remove('visible');
+      btn.disabled = true;
+      btn.textContent = 'Snipping...';
+
+      try {
+        const response = await fetch('/shorten', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ longUrl })
+        });
+
+        if (!response.ok) throw new Error('Failed');
+
+        const data = await response.json();
+        const shortUrl = `${window.location.origin}/${data.shortCode}`;
+        currentShortUrl = shortUrl;
+
+        const linkEl = document.getElementById('shortLink');
+        linkEl.href = shortUrl;
+        linkEl.textContent = shortUrl;
+
+        document.getElementById('originalUrl').textContent = `↳ ${longUrl}`;
+        document.getElementById('copyBtn').textContent = 'Copy';
+        document.getElementById('copyBtn').classList.remove('copied');
+
+        result.classList.add('visible');
+      } catch (e) {
+        errorMsg.classList.add('visible');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Shorten';
+      }
     }
+
+    async function copyUrl() {
+      if (!currentShortUrl) return;
+      await navigator.clipboard.writeText(currentShortUrl);
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = 'Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = 'Copy';
+        btn.classList.remove('copied');
+      }, 2000);
+    }
+
+    document.getElementById('longUrl').addEventListener('keydown', e => {
+      if (e.key === 'Enter') shortenUrl();
+    });
   </script>
 </body>
 </html>

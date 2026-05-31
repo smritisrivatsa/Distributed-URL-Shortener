@@ -4,6 +4,7 @@
     "@aws-sdk/lib-dynamodb": "^3.1048.0",
     "base62": "^2.0.2",
     "dotenv": "^17.4.2",
+    "expres": "^0.0.5",
     "express": "^5.2.1"
   },
   "type": "module"
