@@ -53,7 +53,7 @@
       btn.textContent = 'Snipping...';
 
       try {
-        const response = await fetch('/shorten', {
+        const response = await fetch('http://localhost:3001/shorten', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ longUrl })
@@ -62,7 +62,7 @@
         if (!response.ok) throw new Error('Failed');
 
         const data = await response.json();
-        const shortUrl = `${window.location.origin}/${data.shortCode}`;
+        const shortUrl = `http://localhost:3002/${data.shortCode}`;
         currentShortUrl = shortUrl;
 
         const linkEl = document.getElementById('shortLink');

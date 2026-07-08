@@ -1,4 +1,4 @@
-import { db } from "./db.js";
+import { db } from "../db.js";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 
 export async function getNextCount() {
