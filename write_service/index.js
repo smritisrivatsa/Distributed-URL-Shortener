@@ -7,7 +7,7 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://frontend-9hd329rfo-url-shortener.vercel.app']
+  origin: ['http://localhost:3000', 'https://frontend-xi-mauve-85.vercel.app']
 }));
 
 app.post('/shorten', async (req, res) => {
