@@ -20,4 +20,8 @@ app.get("/:shortCode", async (req, res) => {
   return res.status(404).send("Not found");
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.listen(3002, () => console.log('Redirect service running at http://localhost:3002'));
