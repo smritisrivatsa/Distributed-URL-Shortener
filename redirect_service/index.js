@@ -5,6 +5,10 @@ import { getCachedUrl, insertUrl } from './src/cache.js';
 
 const app = express();
 
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.get("/:shortCode", async (req, res) => {
   const longUrlRedis = await getCachedUrl(req.params.shortCode);
   if (longUrlRedis) {
@@ -18,10 +22,6 @@ app.get("/:shortCode", async (req, res) => {
   }
 
   return res.status(404).send("Not found");
-});
-
-app.get('/health', (req, res) => {
-  res.status(200).send('ok');
 });
 
 app.listen(3002, () => console.log('Redirect service running at http://localhost:3002'));
