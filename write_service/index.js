@@ -15,6 +15,10 @@ app.use(cors({
   ]
 }));
 
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.post('/shorten', async (req, res) => {
   const { longUrl } = req.body;
   const shortCode = await createShortUrl(longUrl);
