@@ -7,8 +7,17 @@ const app = express();
 app.use(express.static('public'));
 app.use(express.json());
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: [
+    'http://localhost:3000',
+    'https://snip-it.click',
+    'https://frontend-xi-mauve-85.vercel.app',
+    'https://frontend-g9wjyqmhm-url-shortener.vercel.app'
+  ]
 }));
+
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
 
 app.post('/shorten', async (req, res) => {
   const { longUrl } = req.body;

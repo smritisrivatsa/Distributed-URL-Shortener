@@ -5,6 +5,10 @@ import { getCachedUrl, insertUrl } from './src/cache.js';
 
 const app = express();
 
+app.get('/health', (req, res) => {
+  res.status(200).send('ok');
+});
+
 app.get("/:shortCode", async (req, res) => {
   const longUrlRedis = await getCachedUrl(req.params.shortCode);
   if (longUrlRedis) {
