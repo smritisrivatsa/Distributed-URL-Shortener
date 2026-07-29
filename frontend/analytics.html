@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>snip. — analytics</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .page-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+    }
+
+    .back-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .back-link:hover { color: var(--accent); }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 0.75rem;
+    }
+
+    /* Chart */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1.5rem;
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      height: 120px;
+    }
+
+    .bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .bar {
+      width: 100%;
+      background: var(--accent);
+      border-radius: 2px 2px 0 0;
+      min-height: 2px;
+      transition: opacity 0.2s;
+    }
+
+    .bar:hover { opacity: 0.7; }
+
+    .bar-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    /* Top URLs table */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .table-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 60px;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .table-row:last-child { border-bottom: none; }
+
+    .table-header {
+      background: var(--bg);
+    }
+
+    .table-header span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .code {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--accent);
+    }
+
+    .url-cell {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .clicks-cell {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--text);
+      text-align: right;
+    }
+
+    /* Recent clicks */
+    .recent-row {
+      display: grid;
+      grid-template-columns: 80px 1fr 140px;
+      gap: 1rem;
+      padding: 0.75rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      align-items: center;
+    }
+
+    .recent-row:last-child { border-bottom: none; }
+
+    .timestamp {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: right;
+    }
+
+    .loading {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+    }
+
+    .empty {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--muted);
+      padding: 1.5rem 1.25rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="page-header">
+      <div>
+        <div class="logo">snip<span>.</span></div>
+        <div class="tagline">Analytics</div>
+      </div>
+      <a class="back-link" href="/">← back</a>
+    </div>
+
+    <!-- Clicks over time -->
+    <div class="section">
+      <div class="section-label">Clicks over time</div>
+      <div class="chart-card">
+        <div class="chart-bars" id="chart">
+          <div class="loading">loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top URLs -->
+    <div class="section">
+      <div class="section-label">Top URLs</div>
+      <div class="table-card">
+        <div class="table-row table-header">
+          <span>Code</span>
+          <span>URL</span>
+          <span style="text-align:right">Clicks</span>
+        </div>
+        <div id="top-urls"><div class="loading">loading...</div></div>
+      </div>
+    </div>
+
+    <!-- Recent clicks -->
+    <div class="section">
+      <div class="section-label">Recent clicks</div>
+      <div class="table-card">
+        <div class="recent-row table-header">
+          <span>Code</span>
+          <span>URL</span>
+          <span style="text-align:right">Time</span>
+        </div>
+        <div id="recent-clicks"><div class="loading">loading...</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const IS_LOCAL = window.location.hostname === 'localhost';
+    const ANALYTICS_URL = IS_LOCAL ? 'http://localhost:3003' : 'https://analytics.snip-it.click';
+
+    function formatTime(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    }
+
+    function formatHour(ts) {
+      const d = new Date(ts);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit' });
+    }
+
+    async function loadChart() {
+      try {
+        const res = await fetch(`${ANALYTICS_URL}/analytics/clicks-over-time`);
+        const data = await res.json();
+        const chart = document.getElementById('chart');
+
+        if (!data.length) {
+          chart.innerHTML = '<div class="empty">No data yet</div>';
+          return;
+        }
+
+        const max = Math.max(...data.map(d => Number(d.clicks)));
+        chart.innerHTML = data.map(d => `
+          <div class="bar-group" title="${formatHour(d.hour)}: ${d.clicks} clicks">
+            <div class="bar" style="height: ${Math.max(4, (Number(d.clicks) / max) * 100)}%"></div>
+            <div class="bar-label">${new Date(d.hour).getHours()}h</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('chart').innerHTML = '<div class="empty">Failed to load</div>';
+      }
+    }
+
+    async function loadTopUrls() {
+      try {
+        const res = await fetch(`${ANALYTICS_URL}/analytics/top-urls`);
+        const data = await res.json();
+        const el = document.getElementById('top-urls');
+
+        if (!data.length) {
+          el.innerHTML = '<div class="empty">No data yet</div>';
+          return;
+        }
+
+        el.innerHTML = data.map(d => `
+          <div class="table-row">
+            <span class="code">${d.shortCode}</span>
+            <span class="url-cell" title="${d.longUrl}">${d.longUrl}</span>
+            <span class="clicks-cell">${d.clicks}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('top-urls').innerHTML = '<div class="empty">Failed to load</div>';
+      }
+    }
+
+    async function loadRecentClicks() {
+      try {
+        const res = await fetch(`${ANALYTICS_URL}/analytics/recent-clicks`);
+        const data = await res.json();
+        const el = document.getElementById('recent-clicks');
+
+        if (!data.length) {
+          el.innerHTML = '<div class="empty">No data yet</div>';
+          return;
+        }
+
+        el.innerHTML = data.map(d => `
+          <div class="recent-row">
+            <span class="code">${d.shortCode}</span>
+            <span class="url-cell" title="${d.longUrl}">${d.longUrl}</span>
+            <span class="timestamp">${formatTime(d.timestamp)}</span>
+          </div>
+        `).join('');
+      } catch (e) {
+        document.getElementById('recent-clicks').innerHTML = '<div class="empty">Failed to load</div>';
+      }
+    }
+
+    loadChart();
+    loadTopUrls();
+    loadRecentClicks();
+  </script>
+</body>
+</html>
